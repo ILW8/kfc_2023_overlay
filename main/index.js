@@ -1,6 +1,13 @@
+// noinspection DuplicatedCode,JSValidateTypes,HttpUrlsUsage,EqualityComparisonWithCoercionJS,HtmlUnknownAttribute,JSUnusedGlobalSymbols
+
+/**
+ * @type {[{beatmap_id:string}]} mappool
+ */
 let mappool, teams;
 (async () => {
-	$.ajaxSetup({ cache: false });
+    // noinspection JSUnresolvedVariable,JSUnresolvedFunction
+    $.ajaxSetup({ cache: false });
+    // noinspection JSUnresolvedVariable,JSUnresolvedFunction
 	mappool = await $.getJSON('../_data/beatmaps.json');
 	// teams = await $.getJSON('../_data/teams.json');
 })();
@@ -75,6 +82,72 @@ let nameBlue;
 let nameRed;
 
 socket.onmessage = event => {
+	/**
+	 *
+	 * @type {
+	 * 	{
+	 * 	tourney:{
+	 * 		manager:{
+     * 		    bools:{
+     * 		        scoreVisible: boolean,
+     * 		        starsVisible: boolean
+     * 		        },
+     * 		    bestOF:number,
+     * 		    stars:{
+     * 		        left:number,
+     * 		        right:number,
+     * 		        },
+     * 		    teamName:{
+     * 		        left:string,
+     * 		        right:string,
+     * 		        },
+     * 		    ipcClients:[{gameplay:{accuracy:number}}],
+     * 		    chat:[{messageBody:string, team:string}],
+     * 		    }
+	 * 		},
+     * 	menu:{
+     * 	    bm:{
+     * 	        md5:string,
+     * 	        path:{
+     * 	            full:string,
+     * 	            },
+     * 	        metadata:{
+     * 	            artist:string,
+     * 	            title:string,
+     * 	            mapper:string,
+     * 	            },
+     * 	        stats:{
+     * 	                fullSR:number,
+     * 	                SR:number,
+     * 	                AR:number,
+     * 	                CS:number,
+     * 	                OD:number,
+     * 	                HP:number,
+     * 	                BPM:{
+     * 	                    min:number,
+     * 	                    max:number,
+     * 	                },
+     * 	                memoryAR:number,
+     * 	                memoryCS:number,
+     * 	                memoryOD:number,
+     * 	                memoryHP:number,
+     * 	            },
+     * 	        time:{
+     * 	            firstObj:number,
+     * 	            current:number,
+     * 	            full:number,
+     * 	            mp3:number,
+     * 	        }
+     * 	        },
+     *      pp:{
+     * 	            strains:[number],
+     * 	        }
+     * 	    }
+	 * 	}
+	 * } data
+	 */
+    // data.menu.bm.time.firstObj
+    // data.menu.bm.stats.fullSR
 	let data = JSON.parse(event.data);
 
 	if (scoreVisible !== data.tourney.manager.bools.scoreVisible) {
@@ -127,44 +200,50 @@ socket.onmessage = event => {
 		mapper.innerHTML = data.menu.bm.metadata.mapper;
 	}
 
-	if (mappool && md5 !== data.menu.bm.md5 || len_ !== data.menu.bm.time.full - data.menu.bm.time.firstObj) {
-		map = mappool ? mappool.find(m => m.beatmap_id == data.menu.bm.id) || { id: data.menu.bm.id, mods: 'NM', identifier: '' } : { mods: 'NM' };
-		let mod_ = map.mods;
-		stats = getModStats(data.menu.bm.stats.CS, data.menu.bm.stats.AR, data.menu.bm.stats.OD, data.menu.bm.stats.BPM.max, mod_);
-		let singlestat = mod_ != 'FM';
+    let map;
+    if (mappool && md5 !== data.menu.bm.md5 || len_ !== data.menu.bm.time.full - data.menu.bm.time.firstObj) {
+        map = mappool ? mappool.find(m => m.beatmap_id == data.menu.bm.id) || {
+            id: data.menu.bm.id,
+            mods: 'NM',
+            identifier: ''
+        } : {mods: 'NM'};
+        let mod_ = map.mods;
+        stats = getModStats(data.menu.bm.stats.CS, data.menu.bm.stats.AR, data.menu.bm.stats.OD, data.menu.bm.stats.BPM.max, mod_);
+        let singlestat = mod_ != 'FM';
 
-		md5 = data.menu.bm.md5;
-		cs.innerHTML = singlestat ? Math.round(stats.cs * 10) / 10 : `${data.menu.bm.stats.AR}<i><svg id="arrow" width="10" height="10" transform="rotate(270)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><defs><style>.cls-1{fill:#fff;}</style></defs><polygon class="cls-1" points="15 40 0 40 15 20 0 0 15 0 30 20 15 40"/></svg>${stats.cs}</i>`;
-		ar.innerHTML = singlestat ? Math.round(stats.ar * 10) / 10 : `${data.menu.bm.stats.CS}<i><svg id="arrow" width="10" height="10" transform="rotate(270)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><defs><style>.cls-1{fill:#fff;}</style></defs><polygon class="cls-1" points="15 40 0 40 15 20 0 0 15 0 30 20 15 40"/></svg>${stats.ar}</i>`;
-		od.innerHTML = singlestat ? Math.round(stats.od * 10) / 10 : `${data.menu.bm.stats.OD}<i><svg id="arrow" width="10" height="10" transform="rotate(270)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><defs><style>.cls-1{fill:#fff;}</style></defs><polygon class="cls-1" points="15 40 0 40 15 20 0 0 15 0 30 20 15 40"/></svg>${stats.od}</i>`;
-		sr.innerHTML = data.menu.bm.stats.fullSR;
-		bpm.innerHTML = Math.round(stats.bpm * 10) / 10;
+        md5 = data.menu.bm.md5;
+        cs.innerHTML = singlestat ? Math.round(stats.cs * 10) / 10 : `${data.menu.bm.stats.AR}<i><svg id="arrow" width="10" height="10" transform="rotate(270)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><defs><style>.cls-1{fill:#fff;}</style></defs><polygon class="cls-1" points="15 40 0 40 15 20 0 0 15 0 30 20 15 40"/></svg>${stats.cs}</i>`;
+        ar.innerHTML = singlestat ? Math.round(stats.ar * 10) / 10 : `${data.menu.bm.stats.CS}<i><svg id="arrow" width="10" height="10" transform="rotate(270)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><defs><style>.cls-1{fill:#fff;}</style></defs><polygon class="cls-1" points="15 40 0 40 15 20 0 0 15 0 30 20 15 40"/></svg>${stats.ar}</i>`;
+        od.innerHTML = singlestat ? Math.round(stats.od * 10) / 10 : `${data.menu.bm.stats.OD}<i><svg id="arrow" width="10" height="10" transform="rotate(270)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 40"><defs><style>.cls-1{fill:#fff;}</style></defs><polygon class="cls-1" points="15 40 0 40 15 20 0 0 15 0 30 20 15 40"/></svg>${stats.od}</i>`;
+        sr.innerHTML = data.menu.bm.stats.fullSR;
+        bpm.innerHTML = Math.round(stats.bpm * 10) / 10;
 
-		len_ = data.menu.bm.time.full - data.menu.bm.time.firstObj;
-		let mins = Math.trunc((len_ / stats.speed) / 1000 / 60);
-		let secs = Math.trunc((len_ / stats.speed) / 1000 % 60);
-		len.innerHTML = `${mins}:${secs.toString().padStart(2, '0')}`;
+        len_ = data.menu.bm.time.full - data.menu.bm.time.firstObj;
+        let mins = Math.trunc((len_ / stats.speed) / 1000 / 60);
+        let secs = Math.trunc((len_ / stats.speed) / 1000 % 60);
+        len.innerHTML = `${mins}:${secs.toString().padStart(2, '0')}`;
 
-		if (window.strainGraph) {
-			strains = JSON.stringify(data.menu.pp.strains);
-			if (!strains) return;
+        if (window.strainGraph) {
+            strains = JSON.stringify(data.menu.pp.strains);
+            if (!strains) return;
 
-			let temp_strains = smooth(data.menu.pp.strains, 3);
-			let new_strains = [];
-			for (let i = 0; i < Math.min(temp_strains.length, 400); i++) {
-				new_strains.push(temp_strains[Math.floor(i * (temp_strains.length / Math.min(temp_strains.length, 400)))]);
-			}
+            // noinspection JSUnresolvedFunction
+            let temp_strains = smooth(data.menu.pp.strains, 3);
+            let new_strains = [];
+            for (let i = 0; i < Math.min(temp_strains.length, 400); i++) {
+                new_strains.push(temp_strains[Math.floor(i * (temp_strains.length / Math.min(temp_strains.length, 400)))]);
+            }
 
-			config.data.datasets[0].data = new_strains;
-			config.data.labels = new_strains;
-			config.options.scales.y.max = Math.max(...new_strains) * 1.3;
-			configProgress.data.datasets[0].data = new_strains;
-			configProgress.data.labels = new_strains;
-			configProgress.options.scales.y.max = Math.max(...new_strains) * 1.3;
-			window.strainGraph.update();
-			window.strainGraphProgress.update();
-		}
-	}
+            config.data.datasets[0].data = new_strains;
+            config.data.labels = new_strains;
+            config.options.scales.y.max = Math.max(...new_strains) * 1.3;
+            configProgress.data.datasets[0].data = new_strains;
+            configProgress.data.labels = new_strains;
+            configProgress.options.scales.y.max = Math.max(...new_strains) * 1.3;
+            window.strainGraph.update();
+            window.strainGraphProgress.update();
+        }
+    }
 
 	if (bestOf !== data.tourney.manager.bestOF) {
 		let newmax = Math.ceil(data.tourney.manager.bestOF / 2);
@@ -237,7 +316,11 @@ socket.onmessage = event => {
 	}
 
 	let now = Date.now();
-	if (fulltime !== data.menu.bm.time.mp3) { fulltime = data.menu.bm.time.mp3; onepart = 1420 / fulltime; }
+    let onepart;
+    if (fulltime !== data.menu.bm.time.mp3) {
+        fulltime = data.menu.bm.time.mp3;
+        onepart = 1420 / fulltime;
+    }
 	if (seek !== data.menu.bm.time.current && fulltime !== undefined && fulltime != 0 && now - last_strain_update > 500) {
 		last_strain_update = now;
 		seek = data.menu.bm.time.current;
@@ -245,8 +328,7 @@ socket.onmessage = event => {
 			progressChart.style.width = '0px';
 		}
 		else {
-			let width = onepart * seek + 'px';
-			progressChart.style.width = width;
+            progressChart.style.width = onepart * seek + 'px';
 		}
 	}
 
@@ -311,7 +393,7 @@ socket.onmessage = event => {
 			}
 
 			// Add the chats
-			for (var i = chatLen; i < data.tourney.manager.chat.length; i++) {
+			for (let i = chatLen; i < data.tourney.manager.chat.length; i++) {
 				tempClass = data.tourney.manager.chat[i].team;
 
 				let text = data.tourney.manager.chat[i].messageBody;
