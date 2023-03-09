@@ -100,7 +100,6 @@ socket.onmessage = event => {
 		} else {
 			blue_points.style.opacity = 0;
 			red_points.style.opacity = 0;
-
 		}
 	}
 
@@ -163,8 +162,8 @@ socket.onmessage = event => {
 			for (let i = firstTo + 1; i <= newmax; i++) {
 				let nodeBlue = document.createElement('div');
 				let nodeRed = document.createElement('div');
-				nodeBlue.className = 'star';
-				nodeRed.className = 'star';
+				nodeBlue.className = 'star-b';
+				nodeRed.className = 'star-r';
 				nodeBlue.id = 'blue' + i.toString();
 				nodeRed.id = 'red' + i.toString();
 				document.getElementById('blue-points').appendChild(nodeBlue);
@@ -242,39 +241,6 @@ socket.onmessage = event => {
 		let width = onepart * seek + 'px';
 		progressChart.style.width = width;
 	}
-
-	// if (now - last_score_update > 500) {
-	// 	last_score_update = now;
-	// 	scoreRed = (0.95 + Math.random() * 0.05) * 100;
-	// 	scoreBlue = (0.95 + Math.random() * 0.05) * 100;
-	// 	animation.red_score.update(scoreRed);
-	// 	animation.blue_score.update(scoreBlue);
-
-	// 	if (scoreRed > scoreBlue && arrow_rotation != 180) {
-	// 		arrow_rotation = 180;
-	// 		lead_arrow.style.transform = `rotate(${arrow_rotation}deg)`;
-	// 		red_score.style.fontWeight = 'bold';
-	// 		red_score.style.color = '#e9d79a';
-	// 		blue_score.style.fontWeight = 'normal';
-	// 		blue_score.style.color = '#f5f5f5';
-	// 	}
-	// 	else if (scoreRed < scoreBlue && arrow_rotation != 360) {
-	// 		arrow_rotation = 360;
-	// 		lead_arrow.style.transform = `rotate(${arrow_rotation}deg)`;
-	// 		blue_score.style.fontWeight = 'bold';
-	// 		blue_score.style.color = '#e9d79a';
-	// 		red_score.style.fontWeight = 'normal';
-	// 		red_score.style.color = '#f5f5f5';
-	// 	}
-	// 	else if (scoreRed == scoreBlue && arrow_rotation != 270) {
-	// 		arrow_rotation = 270;
-	// 		lead_arrow.style.transform = `rotate(${arrow_rotation}deg)`;
-	// 		red_score.style.fontWeight = 'bold';
-	// 		red_score.style.color = '#f5f5f5';
-	// 		blue_score.style.fontWeight = 'bold';
-	// 		blue_score.style.color = '#f5f5f5';
-	// 	}
-	// }
 
 	if (scoreVisible) {
 		let scores = [];
