@@ -83,15 +83,15 @@ socket.onmessage = event => {
 		if (scoreVisible) {
 			chat_container.style.opacity = 0;
 			top_footer.style.opacity = 1;
-			document.documentElement.style.setProperty('--bottom-width', '1420px');
-			document.getElementById('strains').getContext('2d').canvas.width = 1420;
-			document.getElementById('strainsProgress').getContext('2d').canvas.width = 1420;
+			// document.documentElement.style.setProperty('--bottom-width', '1420px');
+			// document.getElementById('strains').getContext('2d').canvas.width = 1420;
+			// document.getElementById('strainsProgress').getContext('2d').canvas.width = 1420;
 		} else {
 			chat_container.style.opacity = 1;
 			top_footer.style.opacity = 0;
-			document.documentElement.style.setProperty('--bottom-width', '650px');
-			document.getElementById('strains').getContext('2d').canvas.width = 650;
-			document.getElementById('strainsProgress').getContext('2d').canvas.width = 650;
+			// document.documentElement.style.setProperty('--bottom-width', '650px');
+			// document.getElementById('strains').getContext('2d').canvas.width = 650;
+			// document.getElementById('strainsProgress').getContext('2d').canvas.width = 650;
 		}
 	}
 	if (starsVisible !== data.tourney.manager.bools.starsVisible) {
@@ -241,8 +241,13 @@ socket.onmessage = event => {
 	if (seek !== data.menu.bm.time.current && fulltime !== undefined && fulltime != 0 && now - last_strain_update > 500) {
 		last_strain_update = now;
 		seek = data.menu.bm.time.current;
-		let width = onepart * seek + 'px';
-		progressChart.style.width = width;
+		if (scoreRed == 0 || scoreBlue == 0) {
+			progressChart.style.width = '0px';
+		}
+		else {
+			let width = onepart * seek + 'px';
+			progressChart.style.width = width;
+		}
 	}
 
 	if (scoreVisible) {
