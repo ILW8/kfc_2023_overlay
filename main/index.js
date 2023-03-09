@@ -83,6 +83,9 @@ socket.onmessage = event => {
 		if (scoreVisible) {
 			chat_container.style.opacity = 0;
 			top_footer.style.opacity = 1;
+			document.documentElement.style.setProperty('--bottom-width', '1420px');
+			document.getElementById('strains').getContext('2d').canvas.width = 1420;
+			document.getElementById('strainsProgress').getContext('2d').canvas.width = 1420;
 		} else {
 			chat_container.style.opacity = 1;
 			top_footer.style.opacity = 0;
