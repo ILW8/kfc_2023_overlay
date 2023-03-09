@@ -144,6 +144,26 @@ socket.onmessage = event => {
 		let mins = Math.trunc((len_ / stats.speed) / 1000 / 60);
 		let secs = Math.trunc((len_ / stats.speed) / 1000 % 60);
 		len.innerHTML = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+		if (window.strainGraph) {
+			strains = JSON.stringify(data.menu.pp.strains);
+			if (!strains) return;
+
+			let temp_strains = smooth(data.menu.pp.strains, 3);
+			let new_strains = [];
+			for (let i = 0; i < Math.min(temp_strains.length, 400); i++) {
+				new_strains.push(temp_strains[Math.floor(i * (temp_strains.length / Math.min(temp_strains.length, 400)))]);
+			}
+
+			config.data.datasets[0].data = new_strains;
+			config.data.labels = new_strains;
+			config.options.scales.y.max = Math.max(...new_strains) * 1.3;
+			configProgress.data.datasets[0].data = new_strains;
+			configProgress.data.labels = new_strains;
+			configProgress.options.scales.y.max = Math.max(...new_strains) * 1.3;
+			window.strainGraph.update();
+			window.strainGraphProgress.update();
+		}
 	}
 
 	if (bestOf !== data.tourney.manager.bestOF) {
@@ -214,26 +234,6 @@ socket.onmessage = event => {
 	if (nameBlue !== data.tourney.manager.teamName.right && data.tourney.manager.teamName.right) {
 		nameBlue = data.tourney.manager.teamName.right || 'Blue Team';
 		blue_name.innerHTML = nameBlue;
-	}
-
-	// update strains
-	if (strains != JSON.stringify(data.menu.pp.strains) && window.strainGraph) {
-		strains = JSON.stringify(data.menu.pp.strains) || null;
-
-		let temp_strains = smooth(data.menu.pp.strains, 3);
-		let new_strains = [];
-		for (let i = 0; i < Math.min(temp_strains.length, 400); i++) {
-			new_strains.push(temp_strains[Math.floor(i * (temp_strains.length / Math.min(temp_strains.length, 400)))]);
-		}
-
-		config.data.datasets[0].data = new_strains;
-		config.data.labels = new_strains;
-		config.options.scales.y.max = Math.max(...new_strains) * 1.3;
-		configProgress.data.datasets[0].data = new_strains;
-		configProgress.data.labels = new_strains;
-		configProgress.options.scales.y.max = Math.max(...new_strains) * 1.3;
-		window.strainGraph.update();
-		window.strainGraphProgress.update();
 	}
 
 	let now = Date.now();
